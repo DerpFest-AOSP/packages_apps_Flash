@@ -8,7 +8,7 @@ package {
 }
 
 android_app {
-    name: "Aperture",
+    name: "Flash",
 
     defaults: ["aapt_version_code_defaults"],
 
@@ -54,4 +54,9 @@ android_app {
     optimize: {
         proguard_flags_files: ["proguard-rules.pro"],
     },
+
+    aaptflags: [
+        "--rename-manifest-package",
+        "org.derpfest.flash",
+    ],
 }
