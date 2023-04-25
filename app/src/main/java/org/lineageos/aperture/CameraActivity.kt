@@ -49,6 +49,7 @@ import androidx.camera.extensions.ExtensionMode
 import androidx.camera.video.Quality
 import androidx.camera.video.Recording
 import androidx.camera.video.VideoRecordEvent
+import androidx.camera.video.muted
 import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
@@ -75,6 +76,16 @@ import coil.request.ImageRequest
 import coil.request.SuccessResult
 import coil.size.Scale
 import com.google.android.material.button.MaterialButton
+import org.lineageos.aperture.camera.Camera
+import org.lineageos.aperture.camera.CameraFacing
+import org.lineageos.aperture.camera.CameraManager
+import org.lineageos.aperture.camera.CameraMode
+import org.lineageos.aperture.camera.CameraState
+import org.lineageos.aperture.camera.FlashMode
+import org.lineageos.aperture.camera.Framerate
+import org.lineageos.aperture.camera.VideoStabilizationMode
+import org.lineageos.aperture.ext.*
+import org.lineageos.aperture.qr.QrImageAnalyzer
 import org.lineageos.aperture.ui.CapturePreviewLayout
 import org.lineageos.aperture.ui.CountDownView
 import org.lineageos.aperture.ui.GridView
@@ -86,15 +97,8 @@ import org.lineageos.aperture.ui.PreviewBlurView
 import org.lineageos.aperture.ui.VerticalSlider
 import org.lineageos.aperture.utils.AssistantIntent
 import org.lineageos.aperture.utils.BroadcastUtils
-import org.lineageos.aperture.utils.Camera
-import org.lineageos.aperture.utils.CameraFacing
-import org.lineageos.aperture.utils.CameraManager
-import org.lineageos.aperture.utils.CameraMode
 import org.lineageos.aperture.utils.CameraSoundsUtils
-import org.lineageos.aperture.utils.CameraState
 import org.lineageos.aperture.utils.ExifUtils
-import org.lineageos.aperture.utils.FlashMode
-import org.lineageos.aperture.utils.Framerate
 import org.lineageos.aperture.utils.GoogleLensUtils
 import org.lineageos.aperture.utils.GridMode
 import org.lineageos.aperture.utils.MediaStoreUtils
@@ -105,7 +109,6 @@ import org.lineageos.aperture.utils.ShortcutsUtils
 import org.lineageos.aperture.utils.StorageUtils
 import org.lineageos.aperture.utils.TimeUtils
 import org.lineageos.aperture.utils.TimerMode
-import org.lineageos.aperture.utils.VideoStabilizationMode
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.FileNotFoundException
@@ -1280,13 +1283,14 @@ open class CameraActivity : AppCompatActivity() {
             timerButton.isEnabled = cameraState == CameraState.IDLE
             aspectRatioButton.isEnabled = cameraState == CameraState.IDLE
             videoQualityButton.isEnabled = cameraState == CameraState.IDLE
-            videoFramerateButton.isEnabled = cameraState == CameraState.IDLE
+            videoFramerateButton.isEnabled =
+                cameraState == CameraState.IDLE && supportedVideoFramerates.size > 1
             effectButton.isEnabled = cameraState == CameraState.IDLE
             // Grid mode can be toggled at any time
             // Torch mode can be toggled at any time
             flashButton.isEnabled =
                 cameraMode != CameraMode.PHOTO || cameraState == CameraState.IDLE
-            micButton.isEnabled = cameraState == CameraState.IDLE
+            micButton.isEnabled = cameraState == CameraState.IDLE || audioConfig.audioEnabled
             settingsButton.isEnabled = cameraState == CameraState.IDLE
         }
     }
@@ -1335,7 +1339,6 @@ open class CameraActivity : AppCompatActivity() {
     }
 
     private fun updateVideoFramerateIcon() {
-        videoFramerateButton.isEnabled = supportedVideoFramerates.size > 1
         videoFramerateButton.isVisible = cameraMode == CameraMode.VIDEO
 
         videoFramerateButton.text = sharedPreferences.videoFramerate?.let {
@@ -1543,7 +1546,7 @@ open class CameraActivity : AppCompatActivity() {
     private fun updateMicrophoneModeIcon() {
         micButton.isVisible = cameraMode == CameraMode.VIDEO
 
-        audioConfig.audioEnabled.let {
+        sharedPreferences.lastMicMode.let {
             micButton.setCompoundDrawablesWithIntrinsicBounds(
                 0,
                 if (it) R.drawable.ic_mic_on else R.drawable.ic_mic_off,
@@ -1558,7 +1561,7 @@ open class CameraActivity : AppCompatActivity() {
      * Toggles microphone during video recording
      */
     private fun toggleMicrophoneMode() {
-        setMicrophoneMode(!audioConfig.audioEnabled)
+        setMicrophoneMode(!sharedPreferences.lastMicMode)
     }
 
     /**
@@ -1567,9 +1570,9 @@ open class CameraActivity : AppCompatActivity() {
     @SuppressLint("MissingPermission")
     private fun setMicrophoneMode(microphoneMode: Boolean) {
         audioConfig = AudioConfig.create(microphoneMode)
-        updateMicrophoneModeIcon()
-
+        recording?.muted = !microphoneMode
         sharedPreferences.lastMicMode = microphoneMode
+        updateMicrophoneModeIcon()
     }
 
     /**

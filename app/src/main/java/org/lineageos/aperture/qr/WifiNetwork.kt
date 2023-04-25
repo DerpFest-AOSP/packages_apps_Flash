@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package org.lineageos.aperture.utils
+package org.lineageos.aperture.qr
 
 import android.net.wifi.WifiNetworkSuggestion
 import android.os.Build
@@ -23,6 +23,12 @@ data class WifiNetwork(
         WEP,
         WPA,
         SAE;
+    }
+
+    init {
+        assert((encryptionType == EncryptionType.NONE) == (password == null)) {
+            "Invalid encryption type/password combination"
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -63,7 +69,9 @@ data class WifiNetwork(
                 else -> EncryptionType.NONE
             }
 
-            return WifiNetwork(result.ssid, result.isHidden, result.password, encryptionType)
+            return runCatching {
+                WifiNetwork(result.ssid, result.isHidden, result.password, encryptionType)
+            }.getOrNull()
         }
     }
 }
