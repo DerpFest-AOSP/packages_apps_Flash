@@ -17,7 +17,6 @@ import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.ColorDrawable
 import android.icu.text.DecimalFormat
 import android.location.Location
-import android.location.LocationListener
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Build
@@ -59,6 +58,9 @@ import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
+import androidx.core.location.LocationListenerCompat
+import androidx.core.location.LocationManagerCompat
+import androidx.core.location.LocationRequestCompat
 import androidx.core.view.WindowCompat.getInsetsController
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -120,7 +122,6 @@ import kotlin.reflect.safeCast
 @androidx.camera.camera2.interop.ExperimentalCamera2Interop
 @androidx.camera.core.ExperimentalZeroShutterLag
 @androidx.camera.view.video.ExperimentalVideo
-@androidx.media3.common.util.UnstableApi
 open class CameraActivity : AppCompatActivity() {
     // Views
     private val aspectRatioButton by lazy { findViewById<Button>(R.id.aspectRatioButton) }
@@ -196,6 +197,10 @@ open class CameraActivity : AppCompatActivity() {
             field = value
             updateGalleryButton()
         }
+
+    // Photo
+    private var photoCaptureMode: Int? = null
+        get() = field!!
 
     // Video
     private val supportedVideoQualities: List<Quality>
@@ -276,7 +281,7 @@ open class CameraActivity : AppCompatActivity() {
     }
 
     private var location: Location? = null
-    private val locationListener = object : LocationListener {
+    private val locationListener = object : LocationListenerCompat {
         override fun onLocationChanged(location: Location) {
             val cameraActivity = this@CameraActivity
             cameraActivity.location = cameraActivity.location?.let {
@@ -286,21 +291,6 @@ open class CameraActivity : AppCompatActivity() {
                     cameraActivity.location
                 }
             } ?: location
-        }
-
-        @Suppress("OVERRIDE_DEPRECATION")
-        override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
-            // Required for Build.VERSION.SDK_INT < Build.VERSION_CODES.R
-        }
-
-        @Suppress("OVERRIDE_DEPRECATION")
-        override fun onProviderEnabled(provider: String) {
-            // Required for Build.VERSION.SDK_INT < Build.VERSION_CODES.R
-        }
-
-        @Suppress("OVERRIDE_DEPRECATION")
-        override fun onProviderDisabled(provider: String) {
-            // Required for Build.VERSION.SDK_INT < Build.VERSION_CODES.R
         }
 
         @SuppressLint("MissingPermission")
@@ -313,7 +303,16 @@ open class CameraActivity : AppCompatActivity() {
             ) {
                 // Request location updates
                 locationManager.allProviders.forEach {
-                    locationManager.requestLocationUpdates(it, 1000, 1f, this)
+                    LocationManagerCompat.requestLocationUpdates(
+                        locationManager,
+                        it,
+                        LocationRequestCompat.Builder(1000).apply {
+                            setMinUpdateDistanceMeters(1f)
+                            setQuality(LocationRequestCompat.QUALITY_BALANCED_POWER_ACCURACY)
+                        }.build(),
+                        this,
+                        Looper.getMainLooper()
+                    )
                 }
             }
         }
@@ -1084,8 +1083,15 @@ open class CameraActivity : AppCompatActivity() {
             }
         }
 
+        photoCaptureMode = sharedPreferences.photoCaptureMode.takeIf {
+            it != ImageCapture.CAPTURE_MODE_ZERO_SHUTTER_LAG || camera.supportsZsl
+        } ?: ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY
+
         // Only photo mode supports vendor extensions for now
-        val cameraSelector = if (cameraMode == CameraMode.PHOTO) {
+        val cameraSelector = if (
+            cameraMode == CameraMode.PHOTO &&
+            photoCaptureMode != ImageCapture.CAPTURE_MODE_ZERO_SHUTTER_LAG
+        ) {
             cameraManager.extensionsManager.getExtensionEnabledCameraSelector(
                 camera.cameraSelector, sharedPreferences.photoEffect
             )
@@ -1120,7 +1126,7 @@ open class CameraActivity : AppCompatActivity() {
         cameraController.setEnabledUseCases(cameraUseCases)
 
         // Restore settings that needs a rebind
-        cameraController.imageCaptureMode = sharedPreferences.photoCaptureMode
+        cameraController.imageCaptureMode = photoCaptureMode as Int
 
         // Bind camera controller to lifecycle
         cameraController.bindToLifecycle(this)
@@ -1283,8 +1289,7 @@ open class CameraActivity : AppCompatActivity() {
             timerButton.isEnabled = cameraState == CameraState.IDLE
             aspectRatioButton.isEnabled = cameraState == CameraState.IDLE
             videoQualityButton.isEnabled = cameraState == CameraState.IDLE
-            videoFramerateButton.isEnabled =
-                cameraState == CameraState.IDLE && supportedVideoFramerates.size > 1
+            videoFramerateButton.isEnabled = cameraState == CameraState.IDLE
             effectButton.isEnabled = cameraState == CameraState.IDLE
             // Grid mode can be toggled at any time
             // Torch mode can be toggled at any time
@@ -1339,6 +1344,7 @@ open class CameraActivity : AppCompatActivity() {
     }
 
     private fun updateVideoFramerateIcon() {
+        videoFramerateButton.isEnabled = supportedVideoFramerates.size > 1
         videoFramerateButton.isVisible = cameraMode == CameraMode.VIDEO
 
         videoFramerateButton.text = sharedPreferences.videoFramerate?.let {
@@ -1580,7 +1586,9 @@ open class CameraActivity : AppCompatActivity() {
      */
     private fun updatePhotoEffectIcon() {
         effectButton.isVisible =
-            cameraMode == CameraMode.PHOTO && camera.supportedExtensionModes.size > 1
+            cameraMode == CameraMode.PHOTO &&
+                    photoCaptureMode != ImageCapture.CAPTURE_MODE_ZERO_SHUTTER_LAG &&
+                    camera.supportedExtensionModes.size > 1
 
         sharedPreferences.photoEffect.let {
             effectButton.setCompoundDrawablesWithIntrinsicBounds(
