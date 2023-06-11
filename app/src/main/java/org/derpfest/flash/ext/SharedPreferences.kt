@@ -16,6 +16,7 @@ import org.derpfest.flash.camera.CameraFacing
 import org.derpfest.flash.camera.CameraMode
 import org.derpfest.flash.camera.FlashMode
 import org.derpfest.flash.camera.FrameRate
+import org.derpfest.flash.utils.GestureActions
 import org.derpfest.flash.utils.GridMode
 import org.derpfest.flash.utils.TimerMode
 
@@ -335,3 +336,16 @@ private const val VIDEO_STABILIZATION_KEY = "video_stabilization"
 private const val VIDEO_STABILIZATION_DEFAULT = true
 internal val SharedPreferences.videoStabilization: Boolean
     get() = getBoolean(VIDEO_STABILIZATION_KEY, VIDEO_STABILIZATION_DEFAULT)
+
+// Volume buttons action
+private const val VOLUME_BUTTONS_ACTION_KEY = "volume_buttons_action"
+private const val VOLUME_BUTTONS_ACTION_DEFAULT = "shutter"
+internal val SharedPreferences.volumeButtonsAction: GestureActions
+    get() = when (getString(VOLUME_BUTTONS_ACTION_KEY, VOLUME_BUTTONS_ACTION_DEFAULT)) {
+        "shutter" -> GestureActions.SHUTTER
+        "zoom" -> GestureActions.ZOOM
+        "volume" -> GestureActions.VOLUME
+        "nothing" -> GestureActions.NOTHING
+        // Default to shutter
+        else -> GestureActions.SHUTTER
+    }
