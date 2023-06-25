@@ -51,16 +51,19 @@ android {
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.9.0")
+    // Align versions of all Kotlin components
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
+
+    implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.exifinterface:exifinterface:1.3.6")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
     implementation("androidx.preference:preference:1.2.0")
-    implementation("com.google.android.material:material:1.9.0-alpha02")
+    implementation("com.google.android.material:material:1.9.0")
 
     // CameraX core library using the camera2 implementation
-    val cameraxVersion = "1.3.0-alpha06"
+    val cameraxVersion = "1.3.0-alpha07"
     // The following line is optional, as the core library is included indirectly by camera-camera2
     implementation("androidx.camera:camera-core:${cameraxVersion}")
     implementation("androidx.camera:camera-camera2:${cameraxVersion}")
@@ -74,7 +77,7 @@ dependencies {
     implementation("androidx.camera:camera-extensions:${cameraxVersion}")
 
     // Media3
-    val media3Version = "1.0.1"
+    val media3Version = "1.0.2"
     // For media playback using ExoPlayer
     implementation("androidx.media3:media3-exoplayer:$media3Version")
     // For building media playback UIs
@@ -159,7 +162,10 @@ tasks.register("generateBp") {
     File("${project.projectDir.absolutePath}/Android.bp").let { file ->
         // Read dependencies
         val dependencies = "${spaces(8)}// DO NOT EDIT THIS SECTION MANUALLY\n".plus(
-            configuration.allDependencies.joinToString("\n") {
+            configuration.allDependencies.filter {
+                // kotlin-bom does not need to be added to dependencies
+                it.group != "org.jetbrains.kotlin" && it.name != "kotlin-bom"
+            }.joinToString("\n") {
                 if (isAvailableInAosp(it.group!!, it.name)) {
                     "${spaces(8)}\"${moduleNameAosp("${it.group}:${it.name}")}\","
                 } else {

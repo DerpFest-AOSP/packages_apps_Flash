@@ -44,6 +44,8 @@ import androidx.camera.camera2.interop.CaptureRequestOptions
 import androidx.camera.core.AspectRatio
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
+import androidx.camera.core.resolutionselector.AspectRatioStrategy
+import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.camera.extensions.ExtensionMode
 import androidx.camera.video.Quality
 import androidx.camera.video.Recording
@@ -1061,9 +1063,16 @@ open class CameraActivity : AppCompatActivity() {
                 CameraController.IMAGE_ANALYSIS
             }
             CameraMode.PHOTO -> {
-                cameraController.imageCaptureTargetSize = CameraController.OutputSize(
-                    sharedPreferences.aspectRatio
-                )
+                cameraController.imageCaptureResolutionSelector = ResolutionSelector.Builder()
+                    .setAspectRatioStrategy(AspectRatioStrategy(
+                        sharedPreferences.aspectRatio, AspectRatioStrategy.FALLBACK_RULE_AUTO
+                    ))
+                    .setAllowedResolutionMode(if (cameraManager.enableHighResolution) {
+                        ResolutionSelector.ALLOWED_RESOLUTIONS_SLOW
+                    } else {
+                        ResolutionSelector.ALLOWED_RESOLUTIONS_NORMAL
+                    })
+                    .build()
                 CameraController.IMAGE_CAPTURE
             }
             CameraMode.VIDEO -> {
@@ -1286,6 +1295,7 @@ open class CameraActivity : AppCompatActivity() {
      */
     private fun updateSecondaryBarButtons() {
         runOnUiThread {
+            // Top
             timerButton.isEnabled = cameraState == CameraState.IDLE
             aspectRatioButton.isEnabled = cameraState == CameraState.IDLE
             videoQualityButton.isEnabled = cameraState == CameraState.IDLE
@@ -1297,6 +1307,11 @@ open class CameraActivity : AppCompatActivity() {
                 cameraMode != CameraMode.PHOTO || cameraState == CameraState.IDLE
             micButton.isEnabled = cameraState == CameraState.IDLE || audioConfig.audioEnabled
             settingsButton.isEnabled = cameraState == CameraState.IDLE
+
+            // Bottom
+            lensSelectorLayout.children.forEach {
+                it.isSoundEffectsEnabled = cameraState == CameraState.IDLE
+            }
         }
     }
 
