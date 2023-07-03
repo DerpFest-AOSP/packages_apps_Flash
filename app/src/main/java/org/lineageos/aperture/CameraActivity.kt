@@ -48,6 +48,7 @@ import androidx.camera.core.resolutionselector.AspectRatioStrategy
 import androidx.camera.core.resolutionselector.ResolutionSelector
 import androidx.camera.extensions.ExtensionMode
 import androidx.camera.video.Quality
+import androidx.camera.video.QualitySelector
 import androidx.camera.video.Recording
 import androidx.camera.video.VideoRecordEvent
 import androidx.camera.video.muted
@@ -86,7 +87,7 @@ import org.lineageos.aperture.camera.CameraManager
 import org.lineageos.aperture.camera.CameraMode
 import org.lineageos.aperture.camera.CameraState
 import org.lineageos.aperture.camera.FlashMode
-import org.lineageos.aperture.camera.Framerate
+import org.lineageos.aperture.camera.FrameRate
 import org.lineageos.aperture.camera.VideoStabilizationMode
 import org.lineageos.aperture.ext.*
 import org.lineageos.aperture.qr.QrImageAnalyzer
@@ -123,7 +124,6 @@ import kotlin.reflect.safeCast
 
 @androidx.camera.camera2.interop.ExperimentalCamera2Interop
 @androidx.camera.core.ExperimentalZeroShutterLag
-@androidx.camera.view.video.ExperimentalVideo
 open class CameraActivity : AppCompatActivity() {
     // Views
     private val aspectRatioButton by lazy { findViewById<Button>(R.id.aspectRatioButton) }
@@ -153,7 +153,7 @@ open class CameraActivity : AppCompatActivity() {
     private val shutterButton by lazy { findViewById<ImageButton>(R.id.shutterButton) }
     private val timerButton by lazy { findViewById<Button>(R.id.timerButton) }
     private val videoDuration by lazy { findViewById<MaterialButton>(R.id.videoDuration) }
-    private val videoFramerateButton by lazy { findViewById<Button>(R.id.videoFramerateButton) }
+    private val videoFrameRateButton by lazy { findViewById<Button>(R.id.videoFrameRateButton) }
     private val videoModeButton by lazy { findViewById<MaterialButton>(R.id.videoModeButton) }
     private val videoQualityButton by lazy { findViewById<Button>(R.id.videoQualityButton) }
     private val videoRecordingStateButton by lazy { findViewById<ImageButton>(R.id.videoRecordingStateButton) }
@@ -205,11 +205,11 @@ open class CameraActivity : AppCompatActivity() {
         get() = field!!
 
     // Video
-    private val supportedVideoQualities: List<Quality>
-        get() = camera.supportedVideoQualities.keys.toList()
-    private val supportedVideoFramerates: List<Framerate>
+    private val supportedVideoQualities: Set<Quality>
+        get() = camera.supportedVideoQualities.keys
+    private val supportedVideoFrameRates: Set<FrameRate>
         get() = camera.supportedVideoQualities.getOrDefault(
-            sharedPreferences.videoQuality, listOf()
+            sharedPreferences.videoQuality, setOf()
         )
     private lateinit var audioConfig: AudioConfig
     private var recording: Recording? = null
@@ -506,7 +506,7 @@ open class CameraActivity : AppCompatActivity() {
         // Set secondary top bar button callbacks
         aspectRatioButton.setOnClickListener { cycleAspectRatio() }
         videoQualityButton.setOnClickListener { cycleVideoQuality() }
-        videoFramerateButton.setOnClickListener { cycleVideoFramerate() }
+        videoFrameRateButton.setOnClickListener { cycleVideoFrameRate() }
         effectButton.setOnClickListener { cyclePhotoEffects() }
         gridButton.setOnClickListener { cycleGridMode() }
         timerButton.setOnClickListener { toggleTimerMode() }
@@ -1068,9 +1068,9 @@ open class CameraActivity : AppCompatActivity() {
                         sharedPreferences.aspectRatio, AspectRatioStrategy.FALLBACK_RULE_AUTO
                     ))
                     .setAllowedResolutionMode(if (cameraManager.enableHighResolution) {
-                        ResolutionSelector.ALLOWED_RESOLUTIONS_SLOW
+                        ResolutionSelector.PREFER_HIGHER_RESOLUTION_OVER_CAPTURE_RATE
                     } else {
-                        ResolutionSelector.ALLOWED_RESOLUTIONS_NORMAL
+                        ResolutionSelector.PREFER_CAPTURE_RATE_OVER_HIGHER_RESOLUTION
                     })
                     .build()
                 CameraController.IMAGE_CAPTURE
@@ -1080,12 +1080,12 @@ open class CameraActivity : AppCompatActivity() {
                 if (!supportedVideoQualities.contains(sharedPreferences.videoQuality)) {
                     sharedPreferences.videoQuality = supportedVideoQualities.first()
                 }
-                cameraController.videoCaptureTargetQuality = null // FIXME: video preview restart
-                cameraController.videoCaptureTargetQuality = sharedPreferences.videoQuality
+                cameraController.videoCaptureQualitySelector =
+                    QualitySelector.from(sharedPreferences.videoQuality)
 
-                // Set proper video framerate
-                sharedPreferences.videoFramerate = (Framerate::getLowerOrHigher)(
-                    sharedPreferences.videoFramerate ?: Framerate.FPS_30, supportedVideoFramerates
+                // Set proper video frame rate
+                sharedPreferences.videoFrameRate = (FrameRate::getLowerOrHigher)(
+                    sharedPreferences.videoFrameRate ?: FrameRate.FPS_30, supportedVideoFrameRates
                 )
 
                 CameraController.VIDEO_CAPTURE
@@ -1146,9 +1146,9 @@ open class CameraActivity : AppCompatActivity() {
             cameraController.camera2CameraControl?.apply {
                 captureRequestOptions = CaptureRequestOptions.Builder()
                     .apply {
-                        setFramerate(
+                        setFrameRate(
                             if (cameraMode == CameraMode.VIDEO) {
-                                sharedPreferences.videoFramerate
+                                sharedPreferences.videoFrameRate
                             } else {
                                 null
                             }
@@ -1190,7 +1190,7 @@ open class CameraActivity : AppCompatActivity() {
         updateTimerModeIcon()
         updateAspectRatioIcon()
         updateVideoQualityIcon()
-        updateVideoFramerateIcon()
+        updateVideoFrameRateIcon()
         updatePhotoEffectIcon()
         updateGridIcon()
         updateFlashModeIcon()
@@ -1299,7 +1299,7 @@ open class CameraActivity : AppCompatActivity() {
             timerButton.isEnabled = cameraState == CameraState.IDLE
             aspectRatioButton.isEnabled = cameraState == CameraState.IDLE
             videoQualityButton.isEnabled = cameraState == CameraState.IDLE
-            videoFramerateButton.isEnabled = cameraState == CameraState.IDLE
+            videoFrameRateButton.isEnabled = cameraState == CameraState.IDLE
             effectButton.isEnabled = cameraState == CameraState.IDLE
             // Grid mode can be toggled at any time
             // Torch mode can be toggled at any time
@@ -1347,7 +1347,11 @@ open class CameraActivity : AppCompatActivity() {
         }
 
         val currentVideoQuality = sharedPreferences.videoQuality
-        val newVideoQuality = supportedVideoQualities.next(currentVideoQuality)
+        val newVideoQuality = supportedVideoQualities.toList().sortedWith { a, b ->
+            listOf(Quality.SD, Quality.HD, Quality.FHD, Quality.UHD).let {
+                it.indexOf(a) - it.indexOf(b)
+            }
+        }.next(currentVideoQuality)
 
         if (newVideoQuality == currentVideoQuality) {
             return
@@ -1358,28 +1362,29 @@ open class CameraActivity : AppCompatActivity() {
         bindCameraUseCases()
     }
 
-    private fun updateVideoFramerateIcon() {
-        videoFramerateButton.isEnabled = supportedVideoFramerates.size > 1
-        videoFramerateButton.isVisible = cameraMode == CameraMode.VIDEO
+    private fun updateVideoFrameRateIcon() {
+        videoFrameRateButton.isEnabled = supportedVideoFrameRates.size > 1
+        videoFrameRateButton.isVisible = cameraMode == CameraMode.VIDEO
 
-        videoFramerateButton.text = sharedPreferences.videoFramerate?.let {
+        videoFrameRateButton.text = sharedPreferences.videoFrameRate?.let {
             resources.getString(R.string.video_framerate_value, it.value)
         } ?: resources.getString(R.string.video_framerate_auto)
     }
 
-    private fun cycleVideoFramerate() {
+    private fun cycleVideoFrameRate() {
         if (!canRestartCamera()) {
             return
         }
 
-        val currentVideoFramerate = sharedPreferences.videoFramerate
-        val newVideoFramerate = supportedVideoFramerates.next(currentVideoFramerate)
+        val currentVideoFrameRate = sharedPreferences.videoFrameRate
+        val newVideoFrameRate = supportedVideoFrameRates.toList().sorted()
+            .next(currentVideoFrameRate)
 
-        if (newVideoFramerate == currentVideoFramerate) {
+        if (newVideoFrameRate == currentVideoFrameRate) {
             return
         }
 
-        sharedPreferences.videoFramerate = newVideoFramerate
+        sharedPreferences.videoFrameRate = newVideoFrameRate
         bindCameraUseCases()
     }
 
