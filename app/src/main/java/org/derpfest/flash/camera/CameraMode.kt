@@ -6,7 +6,7 @@
 package org.derpfest.flash.camera
 
 enum class CameraMode {
-    QR,
     PHOTO,
     VIDEO,
+    QR,
 }
