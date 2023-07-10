@@ -5,8 +5,6 @@
 
 package org.derpfest.flash.camera
 
-import org.derpfest.flash.ext.*
-
 enum class FlashMode {
     /**
      * Flash will not be fired.
@@ -33,11 +31,6 @@ enum class FlashMode {
      * Constant emission of light during preview, auto-focus and snapshot.
      */
     TORCH;
-
-    /**
-     * Get the next mode.
-     */
-    fun next() = values().next(this)
 
     companion object {
         /**
