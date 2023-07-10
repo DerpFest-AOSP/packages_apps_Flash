@@ -94,8 +94,14 @@ import org.derpfest.flash.camera.CameraManager
 import org.derpfest.flash.camera.CameraMode
 import org.derpfest.flash.camera.CameraState
 import org.derpfest.flash.camera.CameraViewModel
+import org.derpfest.flash.camera.ColorCorrectionAberrationMode
+import org.derpfest.flash.camera.DistortionCorrectionMode
+import org.derpfest.flash.camera.EdgeMode
 import org.derpfest.flash.camera.FlashMode
 import org.derpfest.flash.camera.FrameRate
+import org.derpfest.flash.camera.HotPixelMode
+import org.derpfest.flash.camera.NoiseReductionMode
+import org.derpfest.flash.camera.ShadingMode
 import org.derpfest.flash.camera.VideoStabilizationMode
 import org.derpfest.flash.ext.*
 import org.derpfest.flash.qr.QrImageAnalyzer
@@ -1618,6 +1624,80 @@ open class CameraActivity : AppCompatActivity() {
                                 VideoStabilizationMode.OFF
                             }
                         )
+                        sharedPreferences.edgeMode?.takeIf {
+                            camera.supportedEdgeModes.contains(it) && when (cameraMode) {
+                                    CameraMode.PHOTO -> photoCaptureMode !=
+                                            ImageCapture.CAPTURE_MODE_ZERO_SHUTTER_LAG ||
+                                            EdgeMode.ALLOWED_MODES_ON_ZSL.contains(it)
+                                    CameraMode.VIDEO ->
+                                        EdgeMode.ALLOWED_MODES_ON_VIDEO_MODE.contains(it)
+                                    CameraMode.QR -> false
+                            }
+                        }?.let {
+                            setEdgeMode(it)
+                        }
+                        sharedPreferences.noiseReductionMode?.takeIf {
+                            camera.supportedNoiseReductionModes.contains(it) && when (cameraMode) {
+                                CameraMode.PHOTO -> photoCaptureMode !=
+                                        ImageCapture.CAPTURE_MODE_ZERO_SHUTTER_LAG ||
+                                        NoiseReductionMode.ALLOWED_MODES_ON_ZSL.contains(it)
+                                CameraMode.VIDEO ->
+                                    NoiseReductionMode.ALLOWED_MODES_ON_VIDEO_MODE.contains(it)
+                                CameraMode.QR -> false
+                            }
+                        }?.let {
+                            setNoiseReductionMode(it)
+                        }
+                        sharedPreferences.shadingMode?.takeIf {
+                            camera.supportedShadingModes.contains(it) && when (cameraMode) {
+                                CameraMode.PHOTO -> photoCaptureMode !=
+                                        ImageCapture.CAPTURE_MODE_ZERO_SHUTTER_LAG ||
+                                        ShadingMode.ALLOWED_MODES_ON_ZSL.contains(it)
+                                CameraMode.VIDEO ->
+                                    ShadingMode.ALLOWED_MODES_ON_VIDEO_MODE.contains(it)
+                                CameraMode.QR -> false
+                            }
+                        }?.let {
+                            setShadingMode(it)
+                        }
+                        sharedPreferences.colorCorrectionAberrationMode?.takeIf {
+                            camera.supportedColorCorrectionAberrationModes.contains(it) && when (cameraMode) {
+                                CameraMode.PHOTO -> photoCaptureMode !=
+                                        ImageCapture.CAPTURE_MODE_ZERO_SHUTTER_LAG ||
+                                        ColorCorrectionAberrationMode.ALLOWED_MODES_ON_ZSL.contains(it)
+                                CameraMode.VIDEO ->
+                                    ColorCorrectionAberrationMode.ALLOWED_MODES_ON_VIDEO_MODE.contains(it)
+                                CameraMode.QR -> false
+                            }
+                        }?.let {
+                            setColorCorrectionAberrationMode(it)
+                        }
+                        sharedPreferences.distortionCorrectionMode?.takeIf {
+                            camera.supportedDistortionCorrectionModes.contains(it) && when (cameraMode) {
+                                CameraMode.PHOTO -> photoCaptureMode !=
+                                        ImageCapture.CAPTURE_MODE_ZERO_SHUTTER_LAG ||
+                                        DistortionCorrectionMode.ALLOWED_MODES_ON_ZSL.contains(it)
+                                CameraMode.VIDEO ->
+                                    DistortionCorrectionMode.ALLOWED_MODES_ON_VIDEO_MODE.contains(it)
+                                CameraMode.QR -> false
+                            }
+                        }?.let {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                                setDistortionCorrectionMode(it)
+                            }
+                        }
+                        sharedPreferences.hotPixelMode?.takeIf {
+                            camera.supportedHotPixelModes.contains(it) && when (cameraMode) {
+                                CameraMode.PHOTO -> photoCaptureMode !=
+                                        ImageCapture.CAPTURE_MODE_ZERO_SHUTTER_LAG ||
+                                        HotPixelMode.ALLOWED_MODES_ON_ZSL.contains(it)
+                                CameraMode.VIDEO ->
+                                    HotPixelMode.ALLOWED_MODES_ON_VIDEO_MODE.contains(it)
+                                CameraMode.QR -> false
+                            }
+                        }?.let {
+                            setHotPixel(it)
+                        }
                     }
                     .build()
             } ?: Log.wtf(LOG_TAG, "Camera2CameraControl not available even with camera ready?")

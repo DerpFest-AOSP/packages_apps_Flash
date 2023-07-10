@@ -14,8 +14,14 @@ import androidx.camera.video.Quality
 import androidx.core.content.edit
 import org.derpfest.flash.camera.CameraFacing
 import org.derpfest.flash.camera.CameraMode
+import org.derpfest.flash.camera.ColorCorrectionAberrationMode
+import org.derpfest.flash.camera.DistortionCorrectionMode
+import org.derpfest.flash.camera.EdgeMode
 import org.derpfest.flash.camera.FlashMode
 import org.derpfest.flash.camera.FrameRate
+import org.derpfest.flash.camera.HotPixelMode
+import org.derpfest.flash.camera.NoiseReductionMode
+import org.derpfest.flash.camera.ShadingMode
 import org.derpfest.flash.utils.GestureActions
 import org.derpfest.flash.utils.GridMode
 import org.derpfest.flash.utils.TimerMode
@@ -348,4 +354,85 @@ internal val SharedPreferences.volumeButtonsAction: GestureActions
         "nothing" -> GestureActions.NOTHING
         // Default to shutter
         else -> GestureActions.SHUTTER
+    }
+
+// Edge mode
+private const val EDGE_MODE_KEY = "edge_mode"
+private const val EDGE_MODE_DEFAULT = "default"
+internal val SharedPreferences.edgeMode: EdgeMode?
+    get() = when (getString(EDGE_MODE_KEY, EDGE_MODE_DEFAULT)) {
+        "default" -> null
+        "off" -> EdgeMode.OFF
+        "fast" -> EdgeMode.FAST
+        "high_quality" -> EdgeMode.HIGH_QUALITY
+        // Default to default
+        else -> null
+    }
+
+// Noise reduction mode
+private const val NOISE_REDUCTION_MODE_KEY = "noise_reduction_mode"
+private const val NOISE_REDUCTION_MODE_DEFAULT = "default"
+internal val SharedPreferences.noiseReductionMode: NoiseReductionMode?
+    get() = when (getString(NOISE_REDUCTION_MODE_KEY, NOISE_REDUCTION_MODE_DEFAULT)) {
+        "default" -> null
+        "off" -> NoiseReductionMode.OFF
+        "fast" -> NoiseReductionMode.FAST
+        "high_quality" -> NoiseReductionMode.HIGH_QUALITY
+        "minimal" -> NoiseReductionMode.MINIMAL
+        // Default to default
+        else -> null
+    }
+
+// Shading mode
+private const val SHADING_MODE_KEY = "shading_mode"
+private const val SHADING_MODE_DEFAULT = "default"
+internal val SharedPreferences.shadingMode: ShadingMode?
+    get() = when (getString(SHADING_MODE_KEY, SHADING_MODE_DEFAULT)) {
+        "default" -> null
+        "off" -> ShadingMode.OFF
+        "fast" -> ShadingMode.FAST
+        "high_quality" -> ShadingMode.HIGH_QUALITY
+        // Default to default
+        else -> null
+    }
+
+// Color correction aberration mode
+private const val COLOR_CORRECTION_ABERRATION_MODE_KEY = "color_correction_aberration_mode"
+private const val COLOR_CORRECTION_ABERRATION_MODE_DEFAULT = "default"
+internal val SharedPreferences.colorCorrectionAberrationMode: ColorCorrectionAberrationMode?
+    get() = when (getString(
+        COLOR_CORRECTION_ABERRATION_MODE_KEY, COLOR_CORRECTION_ABERRATION_MODE_DEFAULT
+    )) {
+        "default" -> null
+        "off" -> ColorCorrectionAberrationMode.OFF
+        "fast" -> ColorCorrectionAberrationMode.FAST
+        "high_quality" -> ColorCorrectionAberrationMode.HIGH_QUALITY
+        // Default to default
+        else -> null
+    }
+
+// Distortion correction mode
+private const val DISTORTION_CORRECTION_MODE_KEY = "distortion_correction_mode"
+private const val DISTORTION_CORRECTION_MODE_DEFAULT = "default"
+internal val SharedPreferences.distortionCorrectionMode: DistortionCorrectionMode?
+    get() = when (getString(DISTORTION_CORRECTION_MODE_KEY, DISTORTION_CORRECTION_MODE_DEFAULT)) {
+        "default" -> null
+        "off" -> DistortionCorrectionMode.OFF
+        "fast" -> DistortionCorrectionMode.FAST
+        "high_quality" -> DistortionCorrectionMode.HIGH_QUALITY
+        // Default to default
+        else -> null
+    }
+
+// Hot pixel mode
+private const val HOT_PIXEL_MODE_KEY = "hot_pixel_mode"
+private const val HOT_PIXEL_MODE_DEFAULT = "default"
+internal val SharedPreferences.hotPixelMode: HotPixelMode?
+    get() = when (getString(HOT_PIXEL_MODE_KEY, HOT_PIXEL_MODE_DEFAULT)) {
+        "default" -> null
+        "off" -> HotPixelMode.OFF
+        "fast" -> HotPixelMode.FAST
+        "high_quality" -> HotPixelMode.HIGH_QUALITY
+        // Default to default
+        else -> null
     }
