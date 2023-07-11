@@ -10,7 +10,7 @@
         app:title="@string/processing_title">
 
         <Preference
-            style="@style/Theme.Aperture.Settings.MessageBox"
+            style="@style/Theme.Flash.Settings.MessageBox"
             app:icon="@drawable/ic_info"
             app:summary="@string/processing_info" />
 

@@ -5,7 +5,7 @@
 -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    style="@style/Theme.Aperture.Camera.InfoChip"
+    style="@style/Theme.Flash.Camera.InfoChip"
     android:layout_width="wrap_content"
     android:layout_height="32dp"
     android:background="@drawable/info_chip_view_background"
@@ -17,7 +17,7 @@
 
     <ImageView
         android:id="@+id/lowBatteryImageView"
-        style="@style/Theme.Aperture.Camera.InfoChip.ImageView"
+        style="@style/Theme.Flash.Camera.InfoChip.ImageView"
         android:src="@drawable/ic_battery_1_bar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -26,7 +26,7 @@
 
     <ImageView
         android:id="@+id/videoMicMutedImageView"
-        style="@style/Theme.Aperture.Camera.InfoChip.ImageView"
+        style="@style/Theme.Flash.Camera.InfoChip.ImageView"
         android:layout_marginStart="8dp"
         android:src="@drawable/ic_mic_off"
         app:layout_constraintBottom_toBottomOf="parent"
