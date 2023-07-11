@@ -19,10 +19,10 @@
             style="?attr/collapsingToolbarLayoutLargeStyle"
             android:layout_width="match_parent"
             android:layout_height="179dp"
-            app:collapsedTitleTextAppearance="@style/Theme.Aperture.Camera.ToolbarCollapsed"
+            app:collapsedTitleTextAppearance="@style/Theme.Flash.Camera.ToolbarCollapsed"
             app:expandedTitleMarginBottom="31dp"
             app:expandedTitleMarginStart="24dp"
-            app:expandedTitleTextAppearance="@style/Theme.Aperture.Camera.ToolbarExpanded"
+            app:expandedTitleTextAppearance="@style/Theme.Flash.Camera.ToolbarExpanded"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             app:titleCollapseMode="fade"
             app:toolbarId="@id/toolbar">

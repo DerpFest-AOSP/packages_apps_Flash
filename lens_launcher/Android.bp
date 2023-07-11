@@ -5,7 +5,7 @@
 //
 
 android_app {
-    name: "ApertureLensLauncher",
+    name: "FlashLensLauncher",
 
     defaults: ["aapt_version_code_defaults"],
 

@@ -5,12 +5,12 @@
 -->
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.Aperture" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.Flash" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="dialogCornerRadius">28dp</item>
     </style>
 
     <!-- Main activity theme. -->
-    <style name="Theme.Aperture.Camera" parent="Theme.Material3.Dark.NoActionBar">
+    <style name="Theme.Flash.Camera" parent="Theme.Material3.Dark.NoActionBar">
         <item name="android:navigationBarColor">@android:color/black</item>
         <item name="android:statusBarColor">@android:color/black</item>
         <item name="android:windowBackground">@android:color/black</item>
@@ -23,31 +23,31 @@
     </style>
 
     <!-- Settings activity theme. -->
-    <style name="Theme.Aperture.Settings" parent="Theme.Aperture">
-        <item name="android:switchStyle">@style/Theme.Aperture.Settings.Switch</item>
+    <style name="Theme.Flash.Settings" parent="Theme.Flash">
+        <item name="android:switchStyle">@style/Theme.Flash.Settings.Switch</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
         <item name="android:windowTranslucentNavigation">true</item>
-        <item name="alertDialogTheme">@style/Theme.Aperture.Settings.AlertDialog</item>
-        <item name="materialAlertDialogTheme">@style/Theme.Aperture.Settings.AlertDialog</item>
+        <item name="alertDialogTheme">@style/Theme.Flash.Settings.AlertDialog</item>
+        <item name="materialAlertDialogTheme">@style/Theme.Flash.Settings.AlertDialog</item>
     </style>
 
     <!-- Settings alert dialog theme. -->
-    <style name="Theme.Aperture.Settings.AlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
-        <item name="alertDialogStyle">@style/Theme.Aperture.Settings.AlertDialogStyle</item>
+    <style name="Theme.Flash.Settings.AlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="alertDialogStyle">@style/Theme.Flash.Settings.AlertDialogStyle</item>
         <item name="dialogCornerRadius">28dp</item>
         <item name="android:background">@drawable/dialog_preference_background</item>
     </style>
 
     <!-- Settings alert dialog style. -->
-    <style name="Theme.Aperture.Settings.AlertDialogStyle" parent="MaterialAlertDialog.Material3">
+    <style name="Theme.Flash.Settings.AlertDialogStyle" parent="MaterialAlertDialog.Material3">
         <item name="shapeAppearance">@style/ShapeAppearance.Material3.MediumComponent</item>
         <item name="shapeAppearanceOverlay">@null</item>
     </style>
 
     <!-- Settings switch theme. -->
-    <style name="Theme.Aperture.Settings.Switch" parent="@android:style/Widget.Material.CompoundButton.Switch">
+    <style name="Theme.Flash.Settings.Switch" parent="@android:style/Widget.Material.CompoundButton.Switch">
         <item name="android:switchMinWidth">52dp</item>
         <item name="android:minHeight">48dp</item>
         <item name="android:track">@drawable/settingslib_switch_track</item>
@@ -55,7 +55,7 @@
     </style>
 
     <!-- Secondary bar icons base theme -->
-    <style name="Theme.Aperture.Camera.SecondaryBarButton">
+    <style name="Theme.Flash.Camera.SecondaryBarButton">
         <item name="tint">@color/secondary_bar_button_icon</item>
         <item name="backgroundTint">?attr/colorOnPrimary</item>
         <item name="drawableTint">@color/secondary_bar_button_icon</item>
@@ -65,7 +65,7 @@
     </style>
 
     <!-- Secondary top bar icons theme -->
-    <style name="Theme.Aperture.Camera.SecondaryTopBarButton" parent="Theme.Aperture.Camera.SecondaryBarButton">
+    <style name="Theme.Flash.Camera.SecondaryTopBarButton" parent="Theme.Flash.Camera.SecondaryBarButton">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="layout_constraintDimensionRatio">1:1</item>
@@ -77,13 +77,13 @@
     </style>
 
     <!-- Secondary bottom bar icons theme -->
-    <style name="Theme.Aperture.Camera.SecondaryBottomBarButton" parent="Theme.Aperture.Camera.SecondaryBarButton">
+    <style name="Theme.Flash.Camera.SecondaryBottomBarButton" parent="Theme.Flash.Camera.SecondaryBarButton">
         <item name="android:layout_width">40dp</item>
         <item name="android:layout_height">40dp</item>
     </style>
 
     <!-- Camera mode bar icons theme -->
-    <style name="Theme.Aperture.Camera.CameraModeSelectorButton" parent="@style/Widget.Material3.Button.TonalButton">
+    <style name="Theme.Flash.Camera.CameraModeSelectorButton" parent="@style/Widget.Material3.Button.TonalButton">
         <item name="android:backgroundTint">@android:color/transparent</item>
         <item name="android:textColor">@color/camera_mode_selector_text</item>
         <item name="android:textStyle">bold</item>
@@ -91,12 +91,12 @@
     </style>
 
     <!-- Collapsing toolbar style -->
-    <style name="Theme.Aperture.Camera.ToolbarCollapsed" parent="@android:style/TextAppearance.DeviceDefault.Widget.ActionBar.Title">
+    <style name="Theme.Flash.Camera.ToolbarCollapsed" parent="@android:style/TextAppearance.DeviceDefault.Widget.ActionBar.Title">
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textSize">20sp</item>
     </style>
 
-    <style name="Theme.Aperture.Camera.ToolbarExpanded" parent="Theme.Aperture.Camera.ToolbarCollapsed">
+    <style name="Theme.Flash.Camera.ToolbarExpanded" parent="Theme.Flash.Camera.ToolbarCollapsed">
         <item name="android:textSize">36sp</item>
         <item name="android:drawablePadding">10dp</item>
     </style>

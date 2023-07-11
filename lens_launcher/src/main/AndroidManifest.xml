@@ -8,7 +8,7 @@
     package="com.google.android.apps.googlecamera.fishfood">
 
     <application
-        android:label="ApertureLensLauncher"
+        android:label="FlashLensLauncher"
         tools:ignore="MissingApplicationIcon">
         <activity
             android:name=".MainActivity"
