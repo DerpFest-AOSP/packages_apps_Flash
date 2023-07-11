@@ -296,12 +296,12 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_gravity="center"
-            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
             android:backgroundTint="?colorSecondaryContainer"
             android:scaleType="fitXY"
-            app:cardCornerRadius="8dp"
+            app:cardCornerRadius="80dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
@@ -316,26 +316,26 @@
             android:id="@+id/googleLensButton"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
             android:background="@null"
             android:contentDescription="@string/google_lens_button_description"
             android:scaleType="center"
             android:src="@drawable/ic_google_lens"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@+id/flipCameraButton"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_marginEnd="32dp"
+            android:layout_marginStart="32dp"
             android:background="@null"
             android:contentDescription="@string/flip_camera_button_description"
             android:scaleType="center"
             android:src="@drawable/ic_flip_camera"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
