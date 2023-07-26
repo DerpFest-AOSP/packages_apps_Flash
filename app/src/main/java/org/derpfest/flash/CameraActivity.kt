@@ -946,7 +946,7 @@ open class CameraActivity : AppCompatActivity() {
                     GridMode.OFF -> R.drawable.ic_grid_off
                     GridMode.ON_3 -> R.drawable.ic_grid_on_3
                     GridMode.ON_4 -> R.drawable.ic_grid_on_4
-                    GridMode.ON_GOLDENRATIO -> R.drawable.ic_grid_on_goldenratio
+                    GridMode.ON_GOLDEN_RATIO -> R.drawable.ic_grid_on_goldenratio
                 },
                 0,
                 0
@@ -956,7 +956,7 @@ open class CameraActivity : AppCompatActivity() {
                     GridMode.OFF -> R.string.grid_off
                     GridMode.ON_3 -> R.string.grid_on_3
                     GridMode.ON_4 -> R.string.grid_on_4
-                    GridMode.ON_GOLDENRATIO -> R.string.grid_on_goldenratio
+                    GridMode.ON_GOLDEN_RATIO -> R.string.grid_on_goldenratio
                 }
             )
         }
