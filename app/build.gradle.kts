@@ -36,12 +36,13 @@ fun getCommitHash(): String {
 }
 
 android {
-    compileSdk = 33
+    compileSdk = 34
+    namespace = "org.derpfest.flash"
 
     defaultConfig {
         applicationId = "org.derpfest.flash"
         minSdk = 26
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = getCommitHash()
     }
