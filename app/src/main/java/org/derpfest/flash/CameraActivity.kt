@@ -353,6 +353,25 @@ open class CameraActivity : AppCompatActivity() {
         }
     }
 
+    private val mainPermissionsRequestOnStartLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) {
+        if (it.isNotEmpty()) {
+            if (!permissionsUtils.mainPermissionsGranted()) {
+                Toast.makeText(
+                    this, getString(R.string.app_permissions_toast), Toast.LENGTH_SHORT
+                ).show()
+                finish()
+                return@registerForActivityResult
+            }
+
+            // This is a good time to ask the user for location permissions
+            if (sharedPreferences.saveLocation == null) {
+                locationPermissionsDialog.show()
+            }
+        }
+    }
+
     private val mainPermissionsRequestLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) {
@@ -362,14 +381,13 @@ open class CameraActivity : AppCompatActivity() {
                     this, getString(R.string.app_permissions_toast), Toast.LENGTH_SHORT
                 ).show()
                 finish()
+                return@registerForActivityResult
             }
 
-            // This is a good time to ask the user for location permissions
-            if (sharedPreferences.saveLocation == null) {
-                locationPermissionsDialog.show()
-            }
+            bindCameraUseCases()
         }
     }
+
     private val locationPermissionsRequestLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) {
@@ -1136,7 +1154,7 @@ open class CameraActivity : AppCompatActivity() {
 
         // Request camera permissions
         if (!permissionsUtils.mainPermissionsGranted()) {
-            mainPermissionsRequestLauncher.launch(PermissionsUtils.mainPermissions)
+            mainPermissionsRequestOnStartLauncher.launch(PermissionsUtils.mainPermissions)
         } else if (sharedPreferences.saveLocation == null) {
             locationPermissionsDialog.show()
         }
@@ -1144,11 +1162,6 @@ open class CameraActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-
-        // Re-request camera permissions in case the user revoked them on app runtime
-        if (!permissionsUtils.mainPermissionsGranted()) {
-            mainPermissionsRequestLauncher.launch(PermissionsUtils.mainPermissions)
-        }
 
         // Set bright screen
         setBrightScreen(sharedPreferences.brightScreen)
@@ -1173,8 +1186,13 @@ open class CameraActivity : AppCompatActivity() {
         // Start observing battery status
         registerReceiver(batteryBroadcastReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
 
-        // Re-bind the use cases
-        bindCameraUseCases()
+        // Re-request camera permissions in case the user revoked them on app runtime
+        if (!permissionsUtils.mainPermissionsGranted()) {
+            mainPermissionsRequestLauncher.launch(PermissionsUtils.mainPermissions)
+        } else {
+            // If we already have the permission, re-bind the use cases
+            bindCameraUseCases()
+        }
     }
 
     override fun onPause() {
