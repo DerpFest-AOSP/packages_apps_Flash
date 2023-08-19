@@ -6,7 +6,6 @@
 package org.derpfest.flash
 
 import android.animation.ValueAnimator
-import android.annotation.SuppressLint
 import android.app.KeyguardManager
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -321,7 +320,7 @@ open class CameraActivity : AppCompatActivity() {
             } ?: location
         }
 
-        @SuppressLint("MissingPermission")
+        @Suppress("MissingPermission")
         fun register() {
             // Reset cached location
             location = null
@@ -517,7 +516,7 @@ open class CameraActivity : AppCompatActivity() {
     private val launchedViaVoiceIntent
         get() = isVoiceInteractionRoot && intent.hasCategory(Intent.CATEGORY_VOICE)
 
-    @SuppressLint("ClickableViewAccessibility")
+    @Suppress("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -532,7 +531,7 @@ open class CameraActivity : AppCompatActivity() {
         ) {
             setShowWhenLocked(true)
 
-            @SuppressLint("SourceLockedOrientationActivity")
+            @Suppress("SourceLockedOrientationActivity")
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
 
@@ -2004,7 +2003,7 @@ open class CameraActivity : AppCompatActivity() {
     /**
      * Set the specified microphone mode, saving the value to shared prefs and updating the icon
      */
-    @SuppressLint("MissingPermission")
+    @Suppress("MissingPermission")
     private fun setMicrophoneMode(microphoneMode: Boolean) {
         videoAudioConfig = AudioConfig.create(microphoneMode)
         videoRecording?.muted = !microphoneMode

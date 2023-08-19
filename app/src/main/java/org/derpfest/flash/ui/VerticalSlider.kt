@@ -5,7 +5,6 @@
 
 package org.derpfest.flash.ui
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.RectF
 import android.util.AttributeSet
@@ -16,7 +15,7 @@ import org.derpfest.flash.ext.*
 class VerticalSlider @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : Slider(context, attrs, defStyleAttr) {
-    @SuppressLint("ClickableViewAccessibility")
+    @Suppress("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         super.onTouchEvent(event)
 
