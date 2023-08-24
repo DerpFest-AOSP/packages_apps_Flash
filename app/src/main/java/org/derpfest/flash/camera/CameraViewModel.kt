@@ -7,7 +7,6 @@ package org.derpfest.flash.camera
 
 import androidx.camera.video.Quality
 import androidx.camera.video.Recording
-import androidx.camera.view.video.AudioConfig
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import org.derpfest.flash.utils.GridMode
@@ -96,11 +95,6 @@ class CameraViewModel : ViewModel() {
      * Video mic mode.
      */
     val videoMicMode = MutableLiveData<Boolean>()
-
-    /**
-     * Video [AudioConfig].
-     */
-    val videoAudioConfig = MutableLiveData<AudioConfig>()
 
     /**
      * Video [Recording].
