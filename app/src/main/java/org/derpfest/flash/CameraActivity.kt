@@ -46,6 +46,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.camera2.interop.CaptureRequestOptions
 import androidx.camera.core.AspectRatio
@@ -66,7 +67,6 @@ import androidx.camera.view.onPinchToZoom
 import androidx.camera.view.video.AudioConfig
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.Group
 import androidx.core.animation.addListener
 import androidx.core.content.ContextCompat
 import androidx.core.location.LocationListenerCompat
@@ -78,7 +78,6 @@ import androidx.core.view.WindowCompat.getInsetsController
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.children
-import androidx.core.view.doOnLayout
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
@@ -89,7 +88,6 @@ import coil.request.ErrorResult
 import coil.request.ImageRequest
 import coil.request.SuccessResult
 import coil.size.Scale
-import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.sync.Mutex
 import org.derpfest.flash.camera.CameraFacing
@@ -108,6 +106,7 @@ import org.derpfest.flash.camera.ShadingMode
 import org.derpfest.flash.camera.VideoStabilizationMode
 import org.derpfest.flash.ext.*
 import org.derpfest.flash.qr.QrImageAnalyzer
+import org.derpfest.flash.ui.CameraModeSelectorLayout
 import org.derpfest.flash.ui.CapturePreviewLayout
 import org.derpfest.flash.ui.CountDownView
 import org.derpfest.flash.ui.GridView
@@ -131,7 +130,6 @@ import org.derpfest.flash.utils.PermissionsUtils
 import org.derpfest.flash.utils.Rotation
 import org.derpfest.flash.utils.ShortcutsUtils
 import org.derpfest.flash.utils.StorageUtils
-import org.derpfest.flash.utils.TimeUtils
 import org.derpfest.flash.utils.TimerMode
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -147,8 +145,7 @@ import androidx.camera.core.CameraState as CameraXCameraState
 open class CameraActivity : AppCompatActivity() {
     // Views
     private val aspectRatioButton by lazy { findViewById<Button>(R.id.aspectRatioButton) }
-    private val cameraModeButtonsGroup by lazy { findViewById<Group>(R.id.cameraModeButtonsGroup) }
-    private val cameraModeHighlight by lazy { findViewById<MaterialButton>(R.id.cameraModeHighlight) }
+    private val cameraModeSelectorLayout by lazy { findViewById<CameraModeSelectorLayout>(R.id.cameraModeSelectorLayout) }
     private val capturePreviewLayout by lazy { findViewById<CapturePreviewLayout>(R.id.capturePreviewLayout) }
     private val countDownView by lazy { findViewById<CountDownView>(R.id.countDownView) }
     private val effectButton by lazy { findViewById<Button>(R.id.effectButton) }
@@ -165,20 +162,15 @@ open class CameraActivity : AppCompatActivity() {
     private val levelerView by lazy { findViewById<LevelerView>(R.id.levelerView) }
     private val mainLayout by lazy { findViewById<ConstraintLayout>(R.id.mainLayout) }
     private val micButton by lazy { findViewById<Button>(R.id.micButton) }
-    private val modeSelectorLayout by lazy { findViewById<ConstraintLayout>(R.id.modeSelectorLayout) }
-    private val photoModeButton by lazy { findViewById<MaterialButton>(R.id.photoModeButton) }
     private val previewBlurView by lazy { findViewById<PreviewBlurView>(R.id.previewBlurView) }
     private val primaryBarLayout by lazy { findViewById<ConstraintLayout>(R.id.primaryBarLayout) }
     private val proButton by lazy { findViewById<ImageButton>(R.id.proButton) }
-    private val qrModeButton by lazy { findViewById<MaterialButton>(R.id.qrModeButton) }
     private val secondaryBottomBarLayout by lazy { findViewById<ConstraintLayout>(R.id.secondaryBottomBarLayout) }
     private val secondaryTopBarLayout by lazy { findViewById<HorizontalScrollView>(R.id.secondaryTopBarLayout) }
     private val settingsButton by lazy { findViewById<Button>(R.id.settingsButton) }
     private val shutterButton by lazy { findViewById<ImageButton>(R.id.shutterButton) }
     private val timerButton by lazy { findViewById<Button>(R.id.timerButton) }
-    private val videoDurationButton by lazy { findViewById<MaterialButton>(R.id.videoDurationButton) }
     private val videoFrameRateButton by lazy { findViewById<Button>(R.id.videoFrameRateButton) }
-    private val videoModeButton by lazy { findViewById<MaterialButton>(R.id.videoModeButton) }
     private val videoQualityButton by lazy { findViewById<Button>(R.id.videoQualityButton) }
     private val videoRecordingStateButton by lazy { findViewById<ImageButton>(R.id.videoRecordingStateButton) }
     private val viewFinder by lazy { findViewById<PreviewView>(R.id.viewFinder) }
@@ -220,8 +212,8 @@ open class CameraActivity : AppCompatActivity() {
     private var videoQuality by nonNullablePropertyDelegate { model.videoQuality }
     private var videoFrameRate by nullablePropertyDelegate { model.videoFrameRate }
     private var videoMicMode by nonNullablePropertyDelegate { model.videoMicMode }
-    private var videoAudioConfig by nonNullablePropertyDelegate { model.videoAudioConfig }
     private var videoRecording by nullablePropertyDelegate { model.videoRecording }
+    private var videoDuration by nonNullablePropertyDelegate { model.videoRecordingDuration }
 
     private lateinit var initialCameraFacing: CameraFacing
 
@@ -422,8 +414,8 @@ open class CameraActivity : AppCompatActivity() {
     @get:RequiresApi(Build.VERSION_CODES.Q)
     private val onThermalStatusChangedListener by lazy {
         OnThermalStatusChangedListener {
-            val showSnackBar = { s: Int ->
-                Snackbar.make(secondaryBottomBarLayout, s, Snackbar.LENGTH_INDEFINITE)
+            val showSnackBar = { stringId: @receiver:StringRes Int ->
+                Snackbar.make(secondaryBottomBarLayout, stringId, Snackbar.LENGTH_INDEFINITE)
                     .setAnchorView(secondaryBottomBarLayout)
                     .setAction(android.R.string.ok) {
                         // Do nothing
@@ -568,6 +560,7 @@ open class CameraActivity : AppCompatActivity() {
         initialCameraFacing = sharedPreferences.lastCameraFacing
 
         // Pass the view model to the views
+        cameraModeSelectorLayout.cameraViewModel = model
         capturePreviewLayout.cameraViewModel = model
         countDownView.cameraViewModel = model
         infoChipView.cameraViewModel = model
@@ -596,20 +589,16 @@ open class CameraActivity : AppCompatActivity() {
             }
         }
 
-        if (cameraManager.internalCamerasSupportingVideoRecoding.isEmpty()) {
-            // Hide video mode button if no internal camera supports video recoding
-            videoModeButton.isVisible = false
-            if (cameraMode == CameraMode.VIDEO) {
-                // If an app asked for a video we have to bail out
-                if (singleCaptureMode) {
-                    Toast.makeText(
-                        this, getString(R.string.camcorder_unsupported_toast), Toast.LENGTH_LONG
-                    ).show()
-                    finish()
-                }
-                // Fallback to photo mode
-                cameraMode = CameraMode.PHOTO
+        if (cameraMode == CameraMode.VIDEO && !cameraManager.videoRecordingAvailable()) {
+            // If an app asked for a video we have to bail out
+            if (singleCaptureMode) {
+                Toast.makeText(
+                    this, getString(R.string.camcorder_unsupported_toast), Toast.LENGTH_LONG
+                ).show()
+                finish()
             }
+            // Fallback to photo mode
+            cameraMode = CameraMode.PHOTO
         }
 
         // Select a camera
@@ -619,7 +608,7 @@ open class CameraActivity : AppCompatActivity() {
         ViewCompat.setOnApplyWindowInsetsListener(mainLayout) { _, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
-            modeSelectorLayout.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+            cameraModeSelectorLayout.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 bottomMargin = insets.bottom
                 leftMargin = insets.left
                 rightMargin = insets.right
@@ -655,15 +644,6 @@ open class CameraActivity : AppCompatActivity() {
                 true
             } else {
                 false
-            }
-        }
-
-        // Initialize camera mode highlight position
-        (cameraModeHighlight.parent as View).doOnLayout {
-            cameraModeHighlight.x = when (cameraMode) {
-                CameraMode.QR -> qrModeButton.x
-                CameraMode.PHOTO -> photoModeButton.x
-                CameraMode.VIDEO -> videoModeButton.x
             }
         }
 
@@ -787,10 +767,6 @@ open class CameraActivity : AppCompatActivity() {
         }
 
         // Set primary bar button callbacks
-        qrModeButton.setOnClickListener { changeCameraMode(CameraMode.QR) }
-        photoModeButton.setOnClickListener { changeCameraMode(CameraMode.PHOTO) }
-        videoModeButton.setOnClickListener { changeCameraMode(CameraMode.VIDEO) }
-
         flipCameraButton.setOnClickListener { flipCamera() }
         googleLensButton.setOnClickListener {
             dismissKeyguardAndRun {
@@ -866,6 +842,11 @@ open class CameraActivity : AppCompatActivity() {
             }
         }
 
+        // Set mode selector callback
+        cameraModeSelectorLayout.onModeSelectedCallback = {
+            changeCameraMode(it)
+        }
+
         // Bind viewfinder and preview blur view
         previewBlurView.previewView = viewFinder
 
@@ -901,26 +882,6 @@ open class CameraActivity : AppCompatActivity() {
             googleLensButton.isVisible = cameraMode == CameraMode.QR && isGoogleLensAvailable
 
             updatePrimaryBarButtons()
-
-            // Update camera mode buttons
-            qrModeButton.isEnabled = cameraMode != CameraMode.QR
-            photoModeButton.isEnabled = cameraMode != CameraMode.PHOTO
-            videoModeButton.isEnabled = cameraMode != CameraMode.VIDEO
-
-            // Animate camera mode change
-            (cameraModeHighlight.parent as View).doOnLayout {
-                ValueAnimator.ofFloat(
-                    cameraModeHighlight.x, when (cameraMode) {
-                        CameraMode.QR -> qrModeButton.x
-                        CameraMode.PHOTO -> photoModeButton.x
-                        CameraMode.VIDEO -> videoModeButton.x
-                    }
-                ).apply {
-                    addUpdateListener { valueAnimator ->
-                        cameraModeHighlight.x = valueAnimator.animatedValue as Float
-                    }
-                }.start()
-            }
         }
 
         // Observe single capture mode
@@ -929,9 +890,6 @@ open class CameraActivity : AppCompatActivity() {
 
             // Update primary bar buttons
             galleryButtonCardView.isInvisible = inSingleCaptureMode
-
-            // Update camera mode buttons
-            updateCameraModeButtons()
         }
 
         // Observe camera state
@@ -953,12 +911,6 @@ open class CameraActivity : AppCompatActivity() {
             videoRecordingStateButton.isVisible = cameraState.isRecordingVideo
 
             updatePrimaryBarButtons()
-
-            // Update camera mode buttons
-            updateCameraModeButtons()
-
-            // Update video duration button
-            videoDurationButton.isVisible = cameraState.isRecordingVideo
         }
 
         // Observe screen rotation
@@ -1442,7 +1394,7 @@ open class CameraActivity : AppCompatActivity() {
         cameraState = CameraState.PRE_RECORDING_VIDEO
 
         // Update duration text
-        videoDurationButton.text = TimeUtils.convertNanosToString(0)
+        videoDuration = 0L
 
         // Create output options object which contains file + metadata
         val outputOptions = StorageUtils.getVideoMediaStoreOutputOptions(
@@ -1477,8 +1429,7 @@ open class CameraActivity : AppCompatActivity() {
                     }
 
                     is VideoRecordEvent.Status -> runOnUiThread {
-                        videoDurationButton.text =
-                            TimeUtils.convertNanosToString(it.recordingStats.recordedDurationNanos)
+                        videoDuration = it.recordingStats.recordedDurationNanos
                     }
 
                     is VideoRecordEvent.Finalize -> {
@@ -1621,8 +1572,8 @@ open class CameraActivity : AppCompatActivity() {
                 // Log the error
                 Log.e(LOG_TAG, "Error: code: ${it.code}, type: ${it.type}", it.cause)
 
-                val showToast = { s: Int ->
-                    Toast.makeText(this, s, Toast.LENGTH_SHORT).show()
+                val showToast = { stringId: @receiver:StringRes Int ->
+                    Toast.makeText(this, stringId, Toast.LENGTH_SHORT).show()
                 }
 
                 when (it.code) {
@@ -1847,6 +1798,21 @@ open class CameraActivity : AppCompatActivity() {
             }
 
             CameraMode.VIDEO -> {
+                if (!cameraManager.videoRecordingAvailable()) {
+                    Snackbar.make(
+                        cameraModeSelectorLayout,
+                        R.string.camcorder_unsupported_toast,
+                        Snackbar.LENGTH_SHORT,
+                    ).apply {
+                        anchorView = cameraModeSelectorLayout
+                        setAction(android.R.string.ok) {
+                            // Do nothing
+                        }
+                    }.show()
+
+                    return
+                }
+
                 if (this.cameraMode == CameraMode.PHOTO) {
                     startShutterAnimation(ShutterAnimation.PhotoToVideo)
                 } else {
@@ -1925,19 +1891,6 @@ open class CameraActivity : AppCompatActivity() {
 
             flipCameraButton.isInvisible =
                 cameraMode == CameraMode.QR || cameraState.isRecordingVideo
-        }
-    }
-
-    /**
-     * Some UI elements requires checking more than one value, this function will be called
-     * when one of these values will change.
-     */
-    private fun updateCameraModeButtons() {
-        runOnUiThread {
-            val inSingleCaptureMode = model.inSingleCaptureMode.value ?: return@runOnUiThread
-            val cameraState = model.cameraState.value ?: return@runOnUiThread
-
-            cameraModeButtonsGroup.isInvisible = cameraState.isRecordingVideo || inSingleCaptureMode
         }
     }
 

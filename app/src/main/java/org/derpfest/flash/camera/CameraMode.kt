@@ -5,8 +5,11 @@
 
 package org.derpfest.flash.camera
 
-enum class CameraMode {
-    PHOTO,
-    VIDEO,
-    QR,
+import androidx.annotation.StringRes
+import org.derpfest.flash.R
+
+enum class CameraMode(@StringRes val title: Int) {
+    PHOTO(R.string.camera_mode_photo),
+    VIDEO(R.string.camera_mode_video),
+    QR(R.string.camera_mode_qr),
 }
