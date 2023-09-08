@@ -205,30 +205,23 @@ open class CameraActivity : AppCompatActivity() {
     // Current camera state
     private val model: CameraViewModel by viewModels()
 
-    private var camera by propertyDelegate { model.camera }
-    private var cameraMode by propertyDelegate { model.cameraMode }
-    private var singleCaptureMode by propertyDelegate { model.inSingleCaptureMode }
-    private var cameraState by propertyDelegate { model.cameraState }
+    private var camera by nonNullablePropertyDelegate { model.camera }
+    private var cameraMode by nonNullablePropertyDelegate { model.cameraMode }
+    private var singleCaptureMode by nonNullablePropertyDelegate { model.inSingleCaptureMode }
+    private var cameraState by nonNullablePropertyDelegate { model.cameraState }
     private val screenRotation
         get() = model.screenRotation
-    private var gridMode by propertyDelegate { model.gridMode }
-    private var flashMode by propertyDelegate { model.flashMode }
-    private var timerMode by propertyDelegate { model.timerMode }
-    private var photoCaptureMode by propertyDelegate { model.photoCaptureMode }
-    private var photoAspectRatio by propertyDelegate { model.photoAspectRatio }
-    private var photoEffect by propertyDelegate { model.photoEffect }
-    private var videoQuality by propertyDelegate { model.videoQuality }
-    private var videoFrameRate
-        get() = model.videoFrameRate.value
-        set(value) {
-            model.videoFrameRate.setOrPostValue(value)
-        }
-    private var videoMicMode by propertyDelegate { model.videoMicMode }
-    private var videoRecording
-        get() = model.videoRecording.value
-        set(value) {
-            model.videoRecording.setOrPostValue(value)
-        }
+    private var gridMode by nonNullablePropertyDelegate { model.gridMode }
+    private var flashMode by nonNullablePropertyDelegate { model.flashMode }
+    private var timerMode by nonNullablePropertyDelegate { model.timerMode }
+    private var photoCaptureMode by nonNullablePropertyDelegate { model.photoCaptureMode }
+    private var photoAspectRatio by nonNullablePropertyDelegate { model.photoAspectRatio }
+    private var photoEffect by nonNullablePropertyDelegate { model.photoEffect }
+    private var videoQuality by nonNullablePropertyDelegate { model.videoQuality }
+    private var videoFrameRate by nullablePropertyDelegate { model.videoFrameRate }
+    private var videoMicMode by nonNullablePropertyDelegate { model.videoMicMode }
+    private var videoAudioConfig by nonNullablePropertyDelegate { model.videoAudioConfig }
+    private var videoRecording by nullablePropertyDelegate { model.videoRecording }
 
     private lateinit var initialCameraFacing: CameraFacing
 

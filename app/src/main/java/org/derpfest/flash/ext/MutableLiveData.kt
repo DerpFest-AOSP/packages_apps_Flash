@@ -7,7 +7,8 @@ package org.derpfest.flash.ext
 
 import android.os.Looper
 import androidx.lifecycle.MutableLiveData
-import kotlin.reflect.KProperty
+import org.derpfest.flash.utils.livedatadelegate.NonNullableLiveDataDelegate
+import org.derpfest.flash.utils.livedatadelegate.NullableLiveDataDelegate
 
 /**
  * Set the value immediately if we're in the main thread, else it will post it to be set later.
@@ -20,20 +21,8 @@ fun <T> MutableLiveData<T>.setOrPostValue(value: T) {
     }
 }
 
-class LiveDataDelegate<T>(private val initializer: () -> MutableLiveData<T>) {
-    private var cached: MutableLiveData<T>? = null
+inline fun <reified T> nonNullablePropertyDelegate(noinline initializer: () -> MutableLiveData<T>) =
+    NonNullableLiveDataDelegate(initializer)
 
-    val value: MutableLiveData<T>
-        get() = cached ?: run {
-            initializer().also { cached = it }
-            cached!!
-        }
-
-    operator fun getValue(thisRef: Any?, property: KProperty<*>) = value.value!!
-
-    operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T) =
-        this.value.setOrPostValue(value)
-}
-
-inline fun <reified T> propertyDelegate(noinline initializer: () -> MutableLiveData<T>) =
-    LiveDataDelegate(initializer)
+inline fun <reified T> nullablePropertyDelegate(noinline initializer: () -> MutableLiveData<T?>) =
+    NullableLiveDataDelegate(initializer)
