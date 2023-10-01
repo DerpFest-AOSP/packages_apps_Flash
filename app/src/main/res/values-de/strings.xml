@@ -69,4 +69,7 @@
     <string name="location_permission_dialog_description">Füge jeder Aufnahme Standort-Metadaten hinzu, um deine Erinnerungen zuzuordnen.</string>
     <string name="location_permission_dialog_later">Später</string>
     <string name="location_permission_dialog_turn_on">Einschalten</string>
+    <string name="camera_mode_photo">Foto</string>
+    <string name="camera_mode_video">Video</string>
+    <string name="camera_mode_qr">Scan</string>
 </resources>
