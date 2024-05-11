@@ -20,6 +20,8 @@ android_app {
     product_specific: true,
     overrides: ["Camera2"],
 
+    use_embedded_native_libs: true,
+
     required: [
         "ApertureFrameworksBaseOverlay",
         "ApertureLensLauncher",
