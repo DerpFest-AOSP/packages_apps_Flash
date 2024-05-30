@@ -25,6 +25,7 @@ android_app {
     required: [
         "ApertureFrameworksBaseOverlay",
         "ApertureLensLauncher",
+        "preinstalled-packages-org.derpfest.flash",
     ],
 
     static_libs: [
@@ -64,4 +65,12 @@ android_app {
         "--rename-manifest-package",
         "org.derpfest.flash",
     ],
+}
+
+prebuilt_etc {
+    name: "preinstalled-packages-org.derpfest.flash",
+    product_specific: true,
+    sub_dir: "sysconfig",
+    src: "preinstalled-packages-org.derpfest.flash.xml",
+    filename_from_src: true,
 }
