@@ -124,7 +124,7 @@
     <string name="shading_mode_off">Desactivado</string>
     <string name="shading_mode_fast">Rápido</string>
     <string name="shading_mode_high_quality">Alta calidad</string>
-    <string name="color_correction_aberration_mode_title">Corrección de la aberración cromática</string>
+    <string name="color_correction_aberration_mode_title">Corrección de aberración cromática</string>
     <string name="color_correction_aberration_mode_summary">La aberración cromática (del color) se debe a que diferentes longitudes de onda lumínicas no pueden enfocarse en el mismo punto después de atravesar el objetivo.</string>
     <string name="color_correction_aberration_mode_default">Predeterminado</string>
     <string name="color_correction_aberration_mode_off">Desactivado</string>
