@@ -37,6 +37,7 @@
     <string name="qr_copy_description">Αντιγραφή στο πρόχειρο</string>
     <string name="qr_icon_description">Εικονίδιο</string>
     <string name="qr_share_description">Κοινή χρήση</string>
+    <string name="qr_share_with_action">Κοινή χρήση με</string>
     <string name="qr_no_app_available_for_action">Δεν υπάρχει διαθέσιμη εφαρμογή για να χειριστεί αυτήν την ενέργεια</string>
     <string name="qr_address_title">Προσθήκη επαφής</string>
     <string name="qr_address_content_description">Προσθήκη επαφής</string>
