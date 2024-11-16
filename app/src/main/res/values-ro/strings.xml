@@ -37,6 +37,7 @@
     <string name="qr_copy_description">Copiați în clipboard</string>
     <string name="qr_icon_description">Iconiță</string>
     <string name="qr_share_description">Distribuiți</string>
+    <string name="qr_share_with_action">Partajează cu</string>
     <string name="qr_no_app_available_for_action">Nicio aplicație disponibilă pentru a gestiona această acțiune</string>
     <string name="qr_address_title">Adăugați un contact</string>
     <string name="qr_address_content_description">Adăugați un contact</string>

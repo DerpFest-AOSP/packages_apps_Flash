@@ -37,6 +37,7 @@
     <string name="qr_copy_description">Скопировать в буфер обмена</string>
     <string name="qr_icon_description">Значок</string>
     <string name="qr_share_description">Поделиться</string>
+    <string name="qr_share_with_action">Поделиться с</string>
     <string name="qr_no_app_available_for_action">Нет приложения для обработки этого действия</string>
     <string name="qr_address_title">Добавить контакт</string>
     <string name="qr_address_content_description">Добавить контакт</string>

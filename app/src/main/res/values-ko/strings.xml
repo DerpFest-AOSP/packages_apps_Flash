@@ -37,6 +37,7 @@
     <string name="qr_copy_description">클립보드에 복사</string>
     <string name="qr_icon_description">아이콘</string>
     <string name="qr_share_description">공유</string>
+    <string name="qr_share_with_action">공유</string>
     <string name="qr_no_app_available_for_action">이 작업을 실행할 수 있는 앱 없음</string>
     <string name="qr_address_title">연락처 추가</string>
     <string name="qr_address_content_description">연락처 추가</string>

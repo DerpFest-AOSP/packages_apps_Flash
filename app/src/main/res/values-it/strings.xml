@@ -37,6 +37,7 @@
     <string name="qr_copy_description">Copia negli appunti</string>
     <string name="qr_icon_description">Icona</string>
     <string name="qr_share_description">Condividi</string>
+    <string name="qr_share_with_action">Condividi con</string>
     <string name="qr_no_app_available_for_action">Nessuna app disponibile per eseguire quest\'azione</string>
     <string name="qr_address_title">Aggiungi contatto</string>
     <string name="qr_address_content_description">Aggiungi contatto</string>

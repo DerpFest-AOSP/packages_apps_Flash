@@ -37,6 +37,7 @@
     <string name="qr_copy_description">Skopiuj do schowka</string>
     <string name="qr_icon_description">Ikona</string>
     <string name="qr_share_description">Udostępnij</string>
+    <string name="qr_share_with_action">Udostępnij przez</string>
     <string name="qr_no_app_available_for_action">Brak aplikacji do obsługi tego działania</string>
     <string name="qr_address_title">Dodaj kontakt</string>
     <string name="qr_address_content_description">Dodaj kontakt</string>

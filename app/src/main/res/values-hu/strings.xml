@@ -37,6 +37,7 @@
     <string name="qr_copy_description">Másolás a vágólapra</string>
     <string name="qr_icon_description">Ikon</string>
     <string name="qr_share_description">Megosztás</string>
+    <string name="qr_share_with_action">Megosztás a következővel:</string>
     <string name="qr_no_app_available_for_action">Nincs alkalmazás, ami végre tudná hajtani ezt a műveletet</string>
     <string name="qr_address_title">Egy névjegy hozzáadása</string>
     <string name="qr_address_content_description">Adja hozzá a névjegyet</string>

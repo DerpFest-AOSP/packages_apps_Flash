@@ -37,6 +37,7 @@
     <string name="qr_copy_description">クリップボードにコピー</string>
     <string name="qr_icon_description">アイコン</string>
     <string name="qr_share_description">共有</string>
+    <string name="qr_share_with_action">共有先：</string>
     <string name="qr_no_app_available_for_action">このアクションを処理できるアプリがありません</string>
     <string name="qr_address_title">連絡先を追加</string>
     <string name="qr_address_content_description">連絡先を追加します</string>

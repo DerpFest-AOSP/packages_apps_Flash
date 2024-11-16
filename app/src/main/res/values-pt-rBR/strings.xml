@@ -37,6 +37,7 @@
     <string name="qr_copy_description">Copiar para a área de transferência</string>
     <string name="qr_icon_description">Ícone</string>
     <string name="qr_share_description">Compartilhar</string>
+    <string name="qr_share_with_action">Compartilhar com</string>
     <string name="qr_no_app_available_for_action">Nenhum app disponível para lidar com esta ação</string>
     <string name="qr_address_title">Adicionar contato</string>
     <string name="qr_address_content_description">Adicionar contato</string>

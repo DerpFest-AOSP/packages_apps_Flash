@@ -37,6 +37,7 @@
     <string name="qr_copy_description">Cóipeáil chuig an ngearrthaisce</string>
     <string name="qr_icon_description">Deilbhín</string>
     <string name="qr_share_description">Comhroinn</string>
+    <string name="qr_share_with_action">Roinn le</string>
     <string name="qr_no_app_available_for_action">Níl aon aip ar fáil chun an gníomh seo a láimhseáil</string>
     <string name="qr_address_title">Cuir teagmhálaí leis</string>
     <string name="qr_address_content_description">Cuir teagmhálaí leis</string>
