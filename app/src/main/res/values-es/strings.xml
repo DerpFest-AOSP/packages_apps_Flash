@@ -37,6 +37,7 @@
     <string name="qr_copy_description">Copiar al portapapeles</string>
     <string name="qr_icon_description">Icono</string>
     <string name="qr_share_description">Compartir</string>
+    <string name="qr_share_with_action">Compartir con</string>
     <string name="qr_no_app_available_for_action">No hay ninguna aplicación disponible para realizar esta acción</string>
     <string name="qr_address_title">Añadir contacto</string>
     <string name="qr_address_content_description">Añadir contacto</string>

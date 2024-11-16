@@ -37,6 +37,7 @@
     <string name="qr_copy_description">Lövhəyə kopyala</string>
     <string name="qr_icon_description">İkon</string>
     <string name="qr_share_description">Paylaş</string>
+    <string name="qr_share_with_action">Paylaş</string>
     <string name="qr_no_app_available_for_action">Bu əməliyyatı ələ alacaq tətbiq yoxdur</string>
     <string name="qr_address_title">Kontakt əlavə et</string>
     <string name="qr_address_content_description">Kontakt əlavə et</string>

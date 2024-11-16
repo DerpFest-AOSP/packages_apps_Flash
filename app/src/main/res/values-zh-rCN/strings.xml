@@ -37,6 +37,7 @@
     <string name="qr_copy_description">复制到剪贴板</string>
     <string name="qr_icon_description">图标</string>
     <string name="qr_share_description">分享</string>
+    <string name="qr_share_with_action">分享至</string>
     <string name="qr_no_app_available_for_action">没有应用可以执行此操作</string>
     <string name="qr_address_title">添加联系人</string>
     <string name="qr_address_content_description">添加联系人</string>

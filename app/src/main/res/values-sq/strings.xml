@@ -37,6 +37,7 @@
     <string name="qr_copy_description">Kopjo në \'clipboard\'</string>
     <string name="qr_icon_description">Ikonë</string>
     <string name="qr_share_description">Shpërndaje</string>
+    <string name="qr_share_with_action">Shpërndaje me</string>
     <string name="qr_no_app_available_for_action">Nuk disponohet asnjë aplikacion për të trajtuar këtë veprim</string>
     <string name="qr_address_title">Shto kontakt</string>
     <string name="qr_address_content_description">Shto kontakt</string>

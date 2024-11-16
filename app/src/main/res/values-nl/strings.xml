@@ -37,6 +37,7 @@
     <string name="qr_copy_description">Kopieer naar klembord</string>
     <string name="qr_icon_description">Pictogram</string>
     <string name="qr_share_description">Deel</string>
+    <string name="qr_share_with_action">Deel met</string>
     <string name="qr_no_app_available_for_action">Geen app beschikbaar voor deze actie</string>
     <string name="qr_address_title">Voeg contact toe</string>
     <string name="qr_address_content_description">Voeg contact toe</string>

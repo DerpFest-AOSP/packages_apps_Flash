@@ -37,6 +37,7 @@
     <string name="qr_copy_description">Sao chép vào bộ nhớ tạm</string>
     <string name="qr_icon_description">Biểu tượng</string>
     <string name="qr_share_description">Chia sẻ</string>
+    <string name="qr_share_with_action">Chia sẻ bằng</string>
     <string name="qr_no_app_available_for_action">Không có sẵn ứng dụng nào để xử lý hành động này</string>
     <string name="qr_address_title">Thêm liên hệ</string>
     <string name="qr_address_content_description">Thêm liên hệ</string>
