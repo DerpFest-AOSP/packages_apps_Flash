@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2022-2024 The LineageOS Project
+ * SPDX-FileCopyrightText: 2022-2025 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -86,11 +86,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.preference.PreferenceManager
-import coil.decode.VideoFrameDecoder
-import coil.load
-import coil.request.ErrorResult
-import coil.request.ImageRequest
-import coil.size.Scale
+import coil3.load
+import coil3.request.ErrorResult
+import coil3.request.ImageRequest
+import coil3.request.crossfade
+import coil3.request.error
+import coil3.request.fallback
+import coil3.size.Scale
+import coil3.video.VideoFrameDecoder
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
