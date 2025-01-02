@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2022-2024 The LineageOS Project
+ * SPDX-FileCopyrightText: 2022-2025 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -45,7 +45,7 @@ internal fun Bitmap.stackBlur(radius: Int): Bitmap {
         return this
     }
 
-    val bitmap = config?.let { it
+    val bitmap = config?.let {
         copy(it, true)
     } ?: return this
 
