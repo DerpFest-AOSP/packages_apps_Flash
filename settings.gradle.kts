@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2022-2024 The LineageOS Project
+ * SPDX-FileCopyrightText: 2022-2025 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -8,8 +8,10 @@ pluginManagement {
         gradlePluginPortal()
         google()
         mavenCentral()
+        maven("https://raw.githubusercontent.com/lineage-next/gradle-generatebp/v1.21/.m2")
     }
 }
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -19,6 +21,7 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
+
 rootProject.name = "Aperture"
 include(":app")
 include(":lens_launcher")
